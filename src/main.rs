@@ -27,7 +27,15 @@ struct BootSector {
     BS_BootSign: [u8; 2],
 }
 
+impl BootSector {
+    fn BS_OEMName(&self) -> &str {
+        std::str::from_utf8(&self.BS_OEMName).unwrap()
+    }
 
+    fn BPB_BytsPerSec(&self) -> u32 {
+        (self.BPB_BytsPerSec[0] as u32) + ((self.BPB_BytsPerSec[1] as u32) << 8)
+    }
+}
 
 
 fn main() {
@@ -38,5 +46,8 @@ fn main() {
     let boot_sector = &body[0];
 
     println!("{:?}", boot_sector);
+
+    println!("OEMName:{}", boot_sector.BS_OEMName());
+    println!("BytsPerSec:{}", boot_sector.BPB_BytsPerSec());
 }
 
