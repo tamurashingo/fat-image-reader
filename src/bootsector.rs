@@ -1,3 +1,19 @@
+use std::fs::File;
+use std::io::{Error, SeekFrom};
+use std::io::prelude::*;
+
+pub struct FirstSector {
+  pub image: [u8; 512],
+}
+
+pub fn read_first_sector(f: &mut File) -> Result<FirstSector, Error> {
+  let mut sector: [u8; 512] = [0; 512];
+  f.seek(SeekFrom::Start(0))?;
+  f.read_exact(&mut sector)?;
+
+  Ok(FirstSector { image: sector })
+}
+
 pub fn oem_name(image: &Vec<u8>) -> &str {
   let mem = &image[3..9];
   std::str::from_utf8(mem).unwrap()
@@ -60,4 +76,8 @@ fn slice_reserved_sectors(image: &Vec<u8>) -> &[u8] {
   let reserved_sector_count = reserved_sectors(image) as usize;
 
   &image[0..=(sector_size * reserved_sector_count)]
+}
+
+pub fn reserved_sector_size(image: &Vec<u8>) -> u32 {
+  bytes_per_sector(image) * reserved_sectors(image)
 }
