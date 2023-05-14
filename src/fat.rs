@@ -44,14 +44,14 @@ fn fat_type(data_sector_size: u32, sectors_per_cluster: u32) -> FatType {
 
 impl Region {
   pub fn new(sector: &bootsector::FirstSector) -> Self {
-    let fat_start_sector = bootsector::reserved_sectors(sector);
-    let fat_sector_size = bootsector::sectors_per_fats(sector) * bootsector::num_of_fats(sector);
+    let fat_start_sector = sector.reserved_sectors();
+    let fat_sector_size = sector.sectors_per_fats() * sector.num_of_fats();
     let root_dir_start_sector = fat_start_sector + fat_sector_size;
-    let root_dir_sector_size = (32 * bootsector::num_of_root_directory_entries(sector) + bootsector::bytes_per_sector(sector) - 1) / bootsector::bytes_per_sector(sector);
+    let root_dir_sector_size = (32 * sector.num_of_root_directory_entries() + sector.bytes_per_sector() - 1) / sector.bytes_per_sector();
     let data_start_sector = root_dir_start_sector + root_dir_sector_size;
-    let data_sector_size = bootsector::total_sectors(sector) - data_start_sector;
-    let fat_type = fat_type(data_sector_size, bootsector::sectors_per_cluster(sector));
-    let sector_size = bootsector::bytes_per_sector(sector);
+    let data_sector_size = sector.total_sectors() - data_start_sector;
+    let fat_type = fat_type(data_sector_size, sector.sectors_per_cluster());
+    let sector_size = sector.bytes_per_sector();
 
     Self {
       fat_start_sector,
