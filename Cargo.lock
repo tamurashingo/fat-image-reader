@@ -3,5 +3,5 @@
 version = 3
 
 [[package]]
-name = "fat-image-reader"
+name = "fat_image_reader"
 version = "0.1.0"
