@@ -3,7 +3,7 @@ use std::io::{Error, SeekFrom};
 use std::io::prelude::*;
 
 pub struct FirstSector {
-  pub image: [u8; 512],
+  pub image: Vec<u8>, //[u8; 512],
 }
 
 
@@ -14,7 +14,7 @@ impl FirstSector {
     f.seek(SeekFrom::Start(0))?;
     f.read_exact(&mut sector)?;
 
-    Ok(FirstSector { image: sector })
+    Ok(FirstSector { image: sector.to_vec() })
   }
 
   pub fn oem_name(&self) -> &str {
