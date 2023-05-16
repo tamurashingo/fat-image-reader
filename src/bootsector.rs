@@ -63,7 +63,7 @@ impl FirstSector {
   }
 
   pub fn sectors_per_fats(&self) -> u32 {
-    let f16 = (self.image[0x016] as u32) + ((self.image[0x016] as u32) << 8);
+    let f16 = (self.image[0x016] as u32) + ((self.image[0x016+1] as u32) << 8);
     if f16 != 0 {
       f16
     } else {
