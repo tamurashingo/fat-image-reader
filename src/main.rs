@@ -4,7 +4,17 @@ mod dir;
 
 
 fn main() {
-    let image = std::fs::read("data.bin").unwrap();
+    let args: Vec<String> = std::env::args().collect();
+    let target = if args.len() == 1 {
+        "data.bin"
+    } else {
+        &args[1]
+    };
+
+    println!("target_filename:{}", target);
+
+
+    let image = std::fs::read(target).unwrap();
     println!("{}", image.len());
 
     //let image = std::fs::read("data.bin").unwrap();
@@ -24,9 +34,9 @@ fn main() {
         println!("filename: {}.{}", d.filename(), d.extension());
         println!("create  : {} {}", d.created_date(), d.created_time());
         println!("update  : {} {}", d.updated_date(), d.updated_time());
+        println!("size    : {}", d.filesize());
+        println!("{}", d.directory)
     }
-
-
 }
 
 
