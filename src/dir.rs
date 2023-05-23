@@ -135,7 +135,8 @@ pub struct DirectoryEntry {
   created_date: Date,
   updated_time: Time,
   updated_date: Date,
-  deleted: bool,
+  pub directory: bool,
+  pub deleted: bool,
 }
 
 impl DirectoryEntry {
@@ -169,6 +170,7 @@ impl DirectoryEntry {
     let created_date = Date::new((bytes[0x10] as u16) + (bytes[0x10+1] as u16) << 8);
     let updated_time = Time::new((bytes[0x16] as u16) + (bytes[0x16+1] as u16) << 8);
     let updated_date = Date::new((bytes[0x18] as u16) + (bytes[0x18+1] as u16) << 8);
+    let directory = bytes[0x1C] == 0 && bytes[0x1C+1] == 0 && bytes[0x1C+2] == 0 && bytes[0x1C+3] == 0;
     let deleted = bytes[0] == 0x00;
     DirectoryEntry {
       bytes,
@@ -177,6 +179,7 @@ impl DirectoryEntry {
       created_date,
       updated_date,
       updated_time,
+      directory,
       deleted,
     }
   }
@@ -230,6 +233,13 @@ impl DirectoryEntry {
 
   pub fn updated_date(&self) -> &Date {
     &self.updated_date
+  }
+
+  pub fn filesize(&self) -> u32 {
+    (self.bytes[0x1C] as u32)
+    + ((self.bytes[0x1C+1] as u32) << 8)
+    + ((self.bytes[0x1C+2] as u32) << 16)
+    + ((self.bytes[0x1C+3] as u32) << 24)
   }
 }
 
