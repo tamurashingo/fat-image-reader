@@ -149,6 +149,7 @@ impl DirectoryEntry {
 
 
     for entry in 0..entries {
+      // ファイル名の先頭が\0はこれ以降が無効なエントリとなる
       if raw[entry * 32] == 0 {
         break;
       }
@@ -166,10 +167,10 @@ impl DirectoryEntry {
   fn new_inner(raw: &Vec<u8>, entry: usize) -> DirectoryEntry {
     let bytes = raw[(entry * 32)..(entry * 32 + 32)].to_vec();
     let file_attribute = FileAttribute::new(bytes[0x0B]);
-    let created_time = Time::new((bytes[0x0E] as u16) + (bytes[0x0E+1] as u16) << 8);
-    let created_date = Date::new((bytes[0x10] as u16) + (bytes[0x10+1] as u16) << 8);
-    let updated_time = Time::new((bytes[0x16] as u16) + (bytes[0x16+1] as u16) << 8);
-    let updated_date = Date::new((bytes[0x18] as u16) + (bytes[0x18+1] as u16) << 8);
+    let created_time = Time::new((bytes[0x0E] as u16) + ((bytes[0x0E+1] as u16) << 8));
+    let created_date = Date::new((bytes[0x10] as u16) + ((bytes[0x10+1] as u16) << 8));
+    let updated_time = Time::new((bytes[0x16] as u16) + ((bytes[0x16+1] as u16) << 8));
+    let updated_date = Date::new((bytes[0x18] as u16) + ((bytes[0x18+1] as u16) << 8));
     let directory = bytes[0x1C] == 0 && bytes[0x1C+1] == 0 && bytes[0x1C+2] == 0 && bytes[0x1C+3] == 0;
     let deleted = bytes[0] == 0x00;
     DirectoryEntry {
